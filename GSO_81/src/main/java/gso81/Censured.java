@@ -8,7 +8,7 @@ public class Censured {
         this.censor = censor;
     }
 
-    public String censureAll(String str) {
+    public String censure(String str) {
         if (str != null && censor != null && !str.isEmpty() && !censor.isEmpty()
                 && str.length() >= censor.length()) {
             int startStr = 0;
@@ -18,20 +18,11 @@ public class Censured {
                 if (str.substring(i, i + censorLength).equalsIgnoreCase(censor)) {
                     builder.append(str, startStr, i).append(CENSORED);
                     startStr = i + censorLength;
-                    i += (censorLength - 1);
+                    i += (censorLength-1);
                 }
             builder.append(str.substring(startStr));
             return builder.toString();
         }
         return str;
-    }
-
-    public String censure(String str) {
-        if (str != null && censor != null && !str.isEmpty() && !censor.isEmpty()
-                && str.length() >= censor.length()) {
-            return str.replace(censor, CENSORED);
-        }
-        return str;
-
     }
 }
