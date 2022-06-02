@@ -12,7 +12,6 @@ public class TestText {
         String text = "idlerIdleR IdLeRis A IdLeR";
         Censured censured = new Censured(censuredWord);
         System.out.println("censure: " + censured.censure(text));
-        System.out.println("censureAll: " + censured.censureAll(text));
     }
 
     private static void doTestTextAutomaticalllyEditor() {
