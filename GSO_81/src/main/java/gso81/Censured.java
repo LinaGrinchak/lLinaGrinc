@@ -2,13 +2,13 @@ package gso81;
 
 public class Censured {
     private static final String CENSORED = "censored";
-    private String censor;
+    private static String censor;
 
     public Censured(String censor) {
         this.censor = censor;
     }
 
-    public String censure(String str) {
+    public static String censure(String str) {
         if (str != null && censor != null && !str.isEmpty() && !censor.isEmpty()
                 && str.length() >= censor.length()) {
             int startStr = 0;
