@@ -1,10 +1,12 @@
 package gso81;
 
+import java.util.Arrays;
+import java.util.Comparator;
+
 import static java.lang.Character.*;
 
-public class TextAutomaticallyEditor {
-
-    String capitalize(String str) {
+public class TextAnalyzer {
+    public static String capitalize(String str) {
         StringBuilder builder = new StringBuilder();
         if (str != null && !str.isEmpty()) {
             for (int i = 0; i < str.length(); i++)
@@ -18,33 +20,18 @@ public class TextAutomaticallyEditor {
         return builder.toString();
     }
 
-    boolean isPalindrome(String str) {
+    public static boolean isPalindrome(String str) {
         if (str != null && !str.isEmpty()) {
-            str = leaveOnlyLetters(str);
-            if (!str.isEmpty()) {
-                return str.equalsIgnoreCase(new StringBuilder(str).reverse().toString());
+            String onlyLetters = leaveOnlyLetters(str);
+            if (!onlyLetters.isEmpty()) {
+                return onlyLetters.equalsIgnoreCase(new StringBuilder(onlyLetters).reverse().toString());
             } else return false;
         } else return false;
     }
 
-    String alphabetize(String str) {
+    public static String alphabetize(String str) {
         if (str != null && !str.isEmpty()) {
-            str = leaveOnlyLatinLetters(str);
-            String lettersUpperCase = sortedLetters(leaveUpperCaseLatinLetters(str));
-            if (!str.isEmpty()) {
-                String sortedStr = sortedLetters(str.toLowerCase());
-                if (!lettersUpperCase.isEmpty()) {
-                    StringBuilder result = new StringBuilder(str.length());
-                    for (int i = 0; i < lettersUpperCase.length(); i++) {
-                        int pos = sortedStr.indexOf(toLowerCase(lettersUpperCase.charAt(i)));
-                        sortedStr = result.append(sortedStr, 0, pos)
-                                .append(lettersUpperCase.charAt(i))
-                                .append(sortedStr.substring(++pos)).toString();
-                        result.setLength(0);
-                    }
-                }
-                return sortedStr;
-            } else return str;
+            return sortedLetters(str);
         } else return str;
     }
 
@@ -59,37 +46,20 @@ public class TextAutomaticallyEditor {
         return result.toString();
     }
 
-    public static String leaveOnlyLatinLetters(String str) {
+
+    public static String leaveLatinLetters(String str) {
         StringBuilder result = new StringBuilder(str.length());
         for (int i = 0; i < str.length(); i++) {
             char c = str.charAt(i);
-            if (isLowerCaseLatinLetter(c) || isUpperCaseLatinLetter(c)) {
+            if (isLatinLetters(c)) {
                 result.append(c);
             }
         }
         return result.toString();
     }
 
-    public static String leaveLowerCaseLatinLetters(String str) {
-        StringBuilder result = new StringBuilder(str.length());
-        for (int i = 0; i < str.length(); i++) {
-            char c = str.charAt(i);
-            if (isLowerCaseLatinLetter(c)) {
-                result.append(c);
-            }
-        }
-        return result.toString();
-    }
-
-    public static String leaveUpperCaseLatinLetters(String str) {
-        StringBuilder result = new StringBuilder(str.length());
-        for (int i = 0; i < str.length(); i++) {
-            char c = str.charAt(i);
-            if (isUpperCaseLatinLetter(c)) {
-                result.append(c);
-            }
-        }
-        return result.toString();
+    public static boolean isLatinLetters(char c) {
+        return (isLowerCaseLatinLetter(c) || isUpperCaseLatinLetter(c));
     }
 
     public static boolean isLowerCaseLatinLetter(char letter) {
@@ -101,9 +71,13 @@ public class TextAutomaticallyEditor {
     }
 
     public static String sortedLetters(String str) {
-        return str.chars()
-                .sorted()
-                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+        Comparator<String> comparator = (s1, s2) -> {
+            int r = s1.compareToIgnoreCase(s2);
+            return r == 0 ? s1.compareTo(s2) : r;
+        };
+
+        return Arrays.stream(leaveLatinLetters(str).split("")).sorted(comparator)
+                .collect(StringBuilder::new, StringBuilder::append, StringBuilder::append)
                 .toString();
     }
 }
