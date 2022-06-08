@@ -14,12 +14,12 @@ public class TestText {
 
     @Test
     public  void doTestTextAutomaticalllyEditor() {
-        System.out.println(TextAnalyzer.class.getName() + ":");
+        System.out.println(StringUtils.class.getName() + ":");
         String[] text = new String[]{" $ a 4t gd", "Was it a car or a cat I saw?", "Madam, I’m Adam",
                 "apple", "4 bd", "", null, "Алла",
                 "привет Привет ages 12 through 14 (6-8 Grades) and high school from ages 15 through 19 (9-12 Grades).", "Eve"};
         String palindrome = "Was it a car or a cat I saw?";
-        TextAnalyzer textEditor = new TextAnalyzer();
+        StringUtils textEditor = new StringUtils();
         for (String message : text) {
             System.out.println("isPalindrome: " + message + " " + textEditor.isPalindrome(message));
             System.out.println("capitalize: " + textEditor.capitalize(message));
