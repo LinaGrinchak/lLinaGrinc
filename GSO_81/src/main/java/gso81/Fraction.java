@@ -66,7 +66,7 @@ public class Fraction implements Comparable<Fraction> {
         return compare(numerator * o.denominator, o.numerator * denominator);
     }
 
-    private static int doGCD(int a, int b)/* Алгоритм Евклида */// Используется для нахождения наибольшего общего делителя
+    private static int doGCD(int a, int b)
     {
         if (b == 0)
             return a;
@@ -74,7 +74,7 @@ public class Fraction implements Comparable<Fraction> {
             return doGCD(b, a % b);
     }
 
-    private static int doLCM(int a, int b)  // НОК
+    private static int doLCM(int a, int b)
     {
         return a * b / doGCD(a, b);
     }
