@@ -16,11 +16,11 @@ public class Censured {
     }
 
     public String censure(String str) {
-        if (str == null && censor == null && str.isEmpty() && censor.isEmpty()) {
+        if (str == null || str.trim().isEmpty()) {
             return str;
         } else if (!isWordFitOnTheLine(str)) {
             return str;
-        } else if ((censor.contains(" ") || censor.contains("-")) && isContainCensor(str)) {
+        } else if (censor.contains(" ") || censor.contains("-")) {
             return censorOnlyWord(str);
         }
         StringBuilder result = new StringBuilder();
@@ -32,21 +32,16 @@ public class Censured {
             } else if (currentToken.length() == censor.length() && currentToken.equalsIgnoreCase(censor)) {
                 result.append(CENSORED).append(" ");
             } else {
-                if (isContainCensor(currentToken)) {
-                    String censWord = censorOnlyWord(currentToken);
-                    result.append(censoredWithoutSeparators(censWord)).append(" ");
-                } else {
-                    result.append(censoredWithoutSeparators(currentToken)).append(" ");
-                }
+                String censWord = censorOnlyWord(currentToken);
+                result.append(censoredWithoutSeparators(censWord)).append(" ");
+               
             }
         }
         return result.deleteCharAt(result.length() - 1).toString();
     }
 
     private String censorOnlyWord(String str) {
-        if (str == null && censor == null && str.isEmpty() && censor.isEmpty()) {
-            return str;
-        } else if (str.length() < censor.length()) {
+        if (!isContainCensor(str)) {
             return str;
         }
         int startStr = 0;
