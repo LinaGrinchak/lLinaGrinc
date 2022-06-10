@@ -4,12 +4,19 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 public class TestCensuredText {
+    String censuredWord = "краб";
+    String text="Краб крабу сделал грабли, подарил грабли крабу: «Грабь граблями гравий, краб».";
     private void censuredTest(String censuredWord, String text) throws Exception {
         System.out.println(Censured.class.getName() + ":");
         Censured censured = new Censured(censuredWord);
         System.out.println("censure: " + censured.censure(text));
     }
-
+    @Test
+    @Ignore
+    public void doTestCensuredOfGivenText() throws Exception {
+        System.out.println("Censored of given text:");
+        censuredTest(censuredWord, text);
+    }
     @Test
     @Ignore
     public void doTestCensuredWordNull() throws Exception {
