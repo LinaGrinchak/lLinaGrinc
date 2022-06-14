@@ -67,7 +67,7 @@ public class TestFraction {
 
     @Test
     public void doTestInputFraction() {
-        createFraction("fractionStr1");
+        createFraction(fractionStr1);
     }
 
     @Test
@@ -148,5 +148,15 @@ public class TestFraction {
     @Test
     public void doTestInputFractionDivided() {
         dividedFractions(fractionStr1, fractionStr2);
+    }
+
+    @Test
+    public void doTestSubtractExceeding() {
+        subtractFractions("2147483647/8", "-1000/12");
+    }
+
+    @Test
+    public void doTestInputFractionExceeding() {
+        dividedFractions("2147483647/8", "2147483647/8");
     }
 }
