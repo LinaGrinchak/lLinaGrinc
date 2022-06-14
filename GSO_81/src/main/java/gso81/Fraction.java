@@ -6,8 +6,8 @@ import static java.lang.Integer.compare;
 import static java.lang.Math.abs;
 
 public class Fraction implements Comparable<Fraction> {
-    private static int MAX = 2147483647;
-    private static String DIVIDED = "/";
+    private static final int MAX = 2147483647;
+    private static final String DIVIDED = "/";
     private int numerator;
     private int denominator;
 
@@ -60,7 +60,7 @@ public class Fraction implements Comparable<Fraction> {
         } else {
             Fraction f1 = new Fraction(numerator, multiplier.denominator).simplify();
             Fraction f2 = new Fraction(multiplier.numerator, denominator).simplify();
-            if (isWithinIntegersMultiply(numerator, multiplier.numerator) && isWithinIntegersMultiply(denominator, multiplier.denominator)) {
+            if (isWithinIntegersMultiply(f1.numerator, f2.numerator) && isWithinIntegersMultiply(f1.denominator, f2.denominator)) {
                 return f1.multiplyFractions(f2);
             } else {
                 throw new Exception("Number out of bounds for Integer values");
