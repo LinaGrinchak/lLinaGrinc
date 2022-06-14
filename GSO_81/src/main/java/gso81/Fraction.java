@@ -6,6 +6,7 @@ import static java.lang.Integer.compare;
 import static java.lang.Math.abs;
 
 public class Fraction implements Comparable<Fraction> {
+    private static int MAX = 2147483647;
     private int numerator;
     private int denominator;
 
@@ -25,9 +26,25 @@ public class Fraction implements Comparable<Fraction> {
     }
 
     public Fraction add(Fraction term) throws Exception {
+        this.simplify();
+        term.simplify();
         int newDenominator = doLCM(denominator, term.denominator);
-        int newNumerator = numerator * newDenominator / denominator + term.numerator * newDenominator / term.denominator;
-        return simplify(new Fraction(newNumerator, newDenominator));
+        int multiplier1 = newDenominator / denominator;
+        int multiplier2 = newDenominator / term.denominator;
+        if (isWithinIntegersMultiply(numerator, multiplier1) && isWithinIntegersMultiply(term.numerator, multiplier2)) {
+            int multiplicated1 = numerator * multiplier1;
+            int multiplicated2 = term.numerator * multiplier2;
+            if (abs(MAX - multiplicated1) >= abs(multiplicated2)) {
+                int newNumerator = multiplicated1 + multiplicated2;
+                return new Fraction(newNumerator, newDenominator).simplify();
+            } else {
+                throw new Exception("Fraction entered incorrectly");
+
+            }
+        } else {
+            throw new Exception("Fraction entered incorrectly");
+
+        }
     }
 
     public Fraction subtract(Fraction subtrahend) throws Exception {
@@ -35,9 +52,19 @@ public class Fraction implements Comparable<Fraction> {
     }
 
     public Fraction multiply(Fraction multiplier) throws Exception {
-        int newNumerator = numerator * multiplier.numerator;
-        int newDenominator = denominator * multiplier.denominator;
-        return simplify(new Fraction(newNumerator, newDenominator));
+        this.simplify();
+        multiplier.simplify();
+        if (isWithinIntegersMultiply(numerator, multiplier.numerator) && isWithinIntegersMultiply(denominator, multiplier.denominator)) {
+            return this.multiplyFractions(multiplier);
+        } else {
+            Fraction f1 = new Fraction(numerator, multiplier.denominator).simplify();
+            Fraction f2 = new Fraction(multiplier.numerator, denominator).simplify();
+            if (isWithinIntegersMultiply(numerator, multiplier.numerator) && isWithinIntegersMultiply(denominator, multiplier.denominator)) {
+                return f1.multiplyFractions(f2);
+            } else {
+                throw new Exception("Number out of bounds for Integer values");
+            }
+        }
     }
 
     public Fraction divided(Fraction divisor) throws Exception {
@@ -57,10 +84,24 @@ public class Fraction implements Comparable<Fraction> {
         }
     }
 
-    private static Fraction simplify(Fraction fraction) throws Exception {
-        int gcd = doGCD(fraction.numerator, fraction.denominator);
-        int newNumerator = fraction.numerator / gcd;
-        int newDenominator = fraction.denominator / gcd;
+    private static boolean isWithinIntegersMultiply(int b, int a) {
+        if (abs(MAX) / b >= abs(a)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private Fraction multiplyFractions(Fraction multiplier) throws Exception {
+        int newNumerator = numerator * multiplier.numerator;
+        int newDenominator = denominator * multiplier.denominator;
+        return new Fraction(newNumerator, newDenominator).simplify();
+    }
+
+    private Fraction simplify() throws Exception {
+        int gcd = doGCD(numerator, denominator);
+        int newNumerator = numerator / gcd;
+        int newDenominator = denominator / gcd;
         return new Fraction(newNumerator, newDenominator);
     }
 
@@ -76,8 +117,12 @@ public class Fraction implements Comparable<Fraction> {
             return doGCD(b, a % b);
     }
 
-    private static int doLCM(int a, int b) {
-        return a * b / doGCD(a, b);
+    private static int doLCM(int a, int b) throws Exception {
+        if (isWithinIntegersMultiply(a, b)) {
+            return a * b / doGCD(a, b);
+        } else {
+            throw new Exception("Number out of bounds for Integer values");
+        }
     }
 
     @Override
