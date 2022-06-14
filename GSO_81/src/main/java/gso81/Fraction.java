@@ -1,6 +1,7 @@
 package gso81;
 
 import java.util.Arrays;
+
 import static java.lang.Integer.compare;
 import static java.lang.Math.abs;
 
@@ -14,10 +15,12 @@ public class Fraction implements Comparable<Fraction> {
 
     Fraction(String fraction) throws Exception {
         String[] strArray = fraction.split("/");
-        if (strArray.length != 2) {
-            throw new Exception("Fraction entered incorrectly");
-        } else {
+        if (strArray.length == 1) {
+            createFraction(Integer.parseInt(strArray[0]), 1);
+        } else if (strArray.length == 2) {
             createFraction(Integer.parseInt(strArray[0]), Integer.parseInt(strArray[1]));
+        } else {
+            throw new Exception("Fraction entered incorrectly");
         }
     }
 
@@ -37,7 +40,7 @@ public class Fraction implements Comparable<Fraction> {
         return simplify(new Fraction(newNumerator, newDenominator));
     }
 
-    public Fraction divided(Fraction dividend, Fraction divisor) throws Exception {
+    public Fraction divided(Fraction divisor) throws Exception {
         return this.multiply(new Fraction(divisor.denominator, divisor.numerator));
     }
 
@@ -66,24 +69,24 @@ public class Fraction implements Comparable<Fraction> {
         return compare(numerator * o.denominator, o.numerator * denominator);
     }
 
-    private static int doGCD(int a, int b)
-    {
+    private static int doGCD(int a, int b) {
         if (b == 0)
             return a;
         else
             return doGCD(b, a % b);
     }
 
-    private static int doLCM(int a, int b)
-    {
+    private static int doLCM(int a, int b) {
         return a * b / doGCD(a, b);
     }
+
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder();
         result.append(numerator).append("/").append(denominator);
         return result.toString();
     }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
