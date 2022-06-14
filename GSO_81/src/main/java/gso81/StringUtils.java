@@ -1,9 +1,11 @@
 package gso81;
+
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
 import static java.lang.Character.*;
+import static java.lang.Character.isDigit;
 
 public class StringUtils {
     public static String capitalize(String str) {
@@ -22,7 +24,7 @@ public class StringUtils {
 
     public static boolean isPalindrome(String str) {
         if (str != null && !str.isEmpty()) {
-            String onlyLetters = leaveOnlyLetters(str);
+            String onlyLetters = leaveLettersAndDigit(str);
             if (!onlyLetters.isEmpty()) {
                 return onlyLetters.equalsIgnoreCase(new StringBuilder(onlyLetters).reverse().toString());
             }
@@ -38,11 +40,12 @@ public class StringUtils {
         return str;
     }
 
-    private static String leaveOnlyLetters(String str) {
+
+    static String leaveLettersAndDigit(String str) {
         StringBuilder result = new StringBuilder(str.length());
         for (int i = 0; i < str.length(); i++) {
             char c = str.charAt(i);
-            if (isLetter(c)) {
+            if (isLetter(c) || isDigit(c)) {
                 result.append(c);
             }
         }
@@ -80,8 +83,9 @@ public class StringUtils {
         List<String> sortedLetters = Arrays.asList(leaveLatinLetters(str).split(""));
         sortedLetters.sort(comparator);
         StringBuilder result = new StringBuilder(str.length());
-        for (String s:sortedLetters){
-            result.append(s);}
+        for (String s : sortedLetters) {
+            result.append(s);
+        }
         return result.toString();
     }
 }
