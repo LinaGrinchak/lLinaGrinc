@@ -7,6 +7,7 @@ import static java.lang.Math.abs;
 
 public class Fraction implements Comparable<Fraction> {
     private static int MAX = 2147483647;
+    private static String DIVIDED = "/";
     private int numerator;
     private int denominator;
 
@@ -15,7 +16,7 @@ public class Fraction implements Comparable<Fraction> {
     }
 
     Fraction(String fraction) throws Exception {
-        String[] strArray = fraction.split("/");
+        String[] strArray = fraction.split(DIVIDED);
         if (strArray.length == 1) {
             createFraction(Integer.parseInt(strArray[0]), 1);
         } else if (strArray.length == 2) {
@@ -85,11 +86,7 @@ public class Fraction implements Comparable<Fraction> {
     }
 
     private static boolean isWithinIntegersMultiply(int b, int a) {
-        if (abs(MAX) / b >= abs(a)) {
-            return true;
-        } else {
-            return false;
-        }
+        return abs(MAX) / b >= abs(a);
     }
 
     private Fraction multiplyFractions(Fraction multiplier) throws Exception {
@@ -127,9 +124,7 @@ public class Fraction implements Comparable<Fraction> {
 
     @Override
     public String toString() {
-        StringBuilder result = new StringBuilder();
-        result.append(numerator).append("/").append(denominator);
-        return result.toString();
+        return numerator + DIVIDED + denominator;
     }
 
     @Override
