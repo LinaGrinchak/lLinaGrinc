@@ -2,7 +2,7 @@ package gso81;
 
 import java.util.StringTokenizer;
 
-import static java.lang.Character.*;
+import static gso81.StringUtils.leaveLettersAndDigit;
 
 public class Censured {
     private static final String CENSORED = "censored";
@@ -34,7 +34,7 @@ public class Censured {
             } else {
                 String censWord = censorOnlyWord(currentToken);
                 result.append(censoredWithoutSeparators(censWord)).append(" ");
-               
+
             }
         }
         return result.deleteCharAt(result.length() - 1).toString();
@@ -59,7 +59,7 @@ public class Censured {
     }
 
     private String censoredWithoutSeparators(String censWord) {
-        String onlyLettersWord = leaveDigitAndLetters(censWord);
+        String onlyLettersWord = leaveLettersAndDigit(censWord);
         if (isContainCensor(onlyLettersWord)) {
             return censorOnlyWord(onlyLettersWord);
         } else {
@@ -75,14 +75,4 @@ public class Censured {
         return str.toLowerCase().contains(censor.toLowerCase());
     }
 
-    private static String leaveDigitAndLetters(String str) {
-        StringBuilder result = new StringBuilder();
-        for (int i = 0; i < str.length(); i++) {
-            char c = str.charAt(i);
-            if (isLetter(c) || isDigit(c)) {
-                result.append(c);
-            }
-        }
-        return result.toString();
-    }
 }
