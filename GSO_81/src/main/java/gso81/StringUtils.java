@@ -5,7 +5,6 @@ import java.util.Comparator;
 import java.util.List;
 
 import static java.lang.Character.*;
-import static java.lang.Character.isDigit;
 
 public class StringUtils {
     public static String capitalize(String str) {
