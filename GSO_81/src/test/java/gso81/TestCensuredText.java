@@ -1,97 +1,73 @@
 package gso81;
 
-import org.junit.Test;
+import java.util.StringTokenizer;
 
-public class TestCensuredText {
-    String censuredWord = "краб";
-    String text = "Краб крабу сделал грабли, подарил грабли крабу: «Грабь граблями гравий, краб».";
+import static gso81.StringUtils.isEmpty;
+import static gso81.StringUtils.leaveLettersAndDigits;
 
-    private void censuredTest(String censuredWord, String text) {
-        System.out.println(Censured.class.getName() + ":");
-        try {
-            Censured censured = new Censured(censuredWord);
-            System.out.println("censure: " + censured.censure(text));
-        } catch (Exception e) {
-            e.printStackTrace();
+public class Censured {
+    private static final String CENSORED = "censored";
+    private String censor;
+
+    public Censured(String censor) throws Exception {
+        if (isEmpty(censor)) {
+            throw new Exception("Censored word empty");
         }
+        this.censor = censor;
+    }
+
+    public String censure(String str) {
+        if (isEmpty(censor) || !isWordFitOnTheLine(str)) {
+            return str;
+        } else if (censor.contains(" ") || censor.contains("-")) {
+            return censorOnlyWord(str);
+        }
+        StringBuilder result = new StringBuilder();
+        StringTokenizer strTokens = new StringTokenizer(str, " ");
+        while (strTokens.hasMoreTokens()) {
+            String currentToken = strTokens.nextToken();
+            if (!isWordFitOnTheLine(currentToken)) {
+                result.append(currentToken);
+            } else if (currentToken.length() == censor.length() && currentToken.equalsIgnoreCase(censor)) {
+                result.append(CENSORED);
+            } else {
+                String censuredOnlyWord = censorOnlyWord(currentToken);
+                result.append(censorWithoutSeparators(censuredOnlyWord));
+            }
+            result.append(" ");
+        }
+        return result.deleteCharAt(result.length() - 1).toString();
+    }
+
+    private String censorOnlyWord(String str) {
+        if (!isContainCensor(str)) {
+            return str;
+        }
+        int startStr = 0;
+        int censorLength = censor.length();
+        StringBuilder builder = new StringBuilder();
+        for (int inxStr = 0; inxStr + censorLength <= str.length(); inxStr++) {
+            if (str.substring(inxStr, inxStr + censorLength).equalsIgnoreCase(censor)) {
+                builder.append(str, startStr, inxStr).append(CENSORED);
+                startStr = inxStr + censorLength;
+                inxStr += (censorLength - 1);
+            }
+        }
+        builder.append(str.substring(startStr));
+        return builder.toString();
 
     }
 
-    @Test
-    public void doTestCensuredOfGivenText() {
-        System.out.println("Censored of given text:");
-        censuredTest(censuredWord, text);
+    private String censorWithoutSeparators(String str) {
+        String lettersAndDigitsWord = leaveLettersAndDigits(str);
+        return isContainCensor(lettersAndDigitsWord) ? censorOnlyWord(lettersAndDigitsWord) : str;
     }
 
-    @Test
-    public void doTestCensuredWordNull() {
-        System.out.println("Censored Word null:");
-        censuredTest(null, "Censored Spaces:");
+    private boolean isWordFitOnTheLine(String str) {
+        return str.length() >= censor.length();
     }
 
-    @Test
-    public void doTestCensuredWordEmpty() {
-        System.out.println("Censored Word Empty:");
-        censuredTest("", "Censored   Spaces:");
-    }
-
-    @Test
-    public void doTestCensuredWordSpaces() {
-        System.out.println("Censored Word Spaces:");
-        censuredTest("     ", "Censored   Spaces:");
-    }
-
-    @Test
-    public void doTestCensuredHyphenatedWordText() {
-        System.out.println("Censured Hyphenated Word Tex:");
-        censuredTest("ЖАДИНА-ГОВЯДИНА", "Жадина-говядина – / Солёный огурец, / На полу валяется, / Никого не ест.");
-    }
-
-    @Test
-    public void doTestCensuredPhraseText() {
-        System.out.println("Censured Phrase in Text:");
-        censuredTest("РЕВА КОРОВА", " Рева корова ДАЙ МОЛОКА");
-    }
-
-    @Test
-    public void doTestCensuredCommonWordInText() {
-        System.out.println("Censured Common Word In Text:");
-        censuredTest("idler", "Idler - a habitually lazy person.");
-    }
-
-    @Test
-    public void doTestCensoredWordNextToPunctuation() {
-        System.out.println("Censored Word Next To Punctuation:");
-        censuredTest("fool", "He is a running fool.");
-    }
-
-    @Test
-    public void doTestCensoredOfWordBrokenBySymbols() {
-        System.out.println("Censored Of Word Broken By Symbols:");
-        censuredTest("fool", "4f-o-o_lTT.");
-    }
-
-    @Test
-    public void doTestCensoredRepeat() {
-        System.out.println("Censored Repeat:");
-        censuredTest("fool", "4f-o-o_lTTFool.");
-    }
-
-    @Test
-    public void doTestNullText() {
-        System.out.println("Censored null:");
-        censuredTest("fool", null);
-    }
-
-    @Test
-    public void doTestWithoutText() {
-        System.out.println("Censored Without Text:");
-        censuredTest("fool", "");
-    }
-
-    @Test
-    public void doTestTextSpaces() {
-        System.out.println("Censored Spaces:");
-        censuredTest("fool", "        ");
+    private boolean isContainCensor(String str) {
+        return str.toLowerCase().contains(censor.toLowerCase());
     }
 }
