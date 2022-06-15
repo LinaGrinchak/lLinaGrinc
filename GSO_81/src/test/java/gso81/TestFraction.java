@@ -1,132 +1,162 @@
 package gso81;
 
-import java.util.Arrays;
+import org.junit.Test;
 
-import static java.lang.Integer.compare;
-import static java.lang.Math.abs;
+public class TestFraction {
+    String fractionStr1 = "6/8";
+    String fractionStr2 = "-6/57";
 
-public class Fraction implements Comparable<Fraction> {
-    private static final int MAX = 2147483647;
-    private static final String DIVIDED = "/";
-    private static final String MESSAGE_EXCEPTION_NUMBER = "Number out of bounds for Integer values";
-    private int numerator;
-    private int denominator;
-
-    Fraction(int numerator, int denominator) throws Exception {
-        createFraction(numerator, denominator);
-    }
-
-    Fraction(String fraction) throws Exception {
-        String[] strArray = fraction.split(DIVIDED);
-        int lengthArray=strArray.length;
-        if (lengthArray > 2) {
-            throw new Exception("Fraction entered incorrectly");
-        } else if (lengthArray == 1) {
-            createFraction(Integer.parseInt(strArray[0]), 1);
-        } else if (lengthArray == 2) {
-            createFraction(Integer.parseInt(strArray[0]), Integer.parseInt(strArray[1]));
+    private void createFraction(String fractionStr) {
+        System.out.println(StringUtils.class.getName() + ":");
+        System.out.println("Input fraction: " + fractionStr);
+        try {
+            Fraction fraction = new Fraction(fractionStr);
+            System.out.println("fraction: " + fraction);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
-    public Fraction add(Fraction term) throws Exception {
-        this.simplify();
-        term.simplify();
-        int newDenominator = doLCM(denominator, term.denominator);
-        int multiplier1 = newDenominator / denominator;
-        int multiplier2 = newDenominator / term.denominator;
-        checkExceptionsForIntMultiply(numerator, multiplier1);
-        checkExceptionsForIntMultiply(term.numerator, multiplier2);
-        int multiplicated1 = numerator * multiplier1;
-        int multiplicated2 = term.numerator * multiplier2;
-        if (abs(MAX - multiplicated1) < abs(multiplicated2)) {
-            throw new Exception(MESSAGE_EXCEPTION_NUMBER);
+    private void sumFractions(String fractionStr1, String fractionStr2) {
+        System.out.println(StringUtils.class.getName() + ":");
+        System.out.println("Input fraction 1: " + fractionStr1 + " Input fraction 2: " + fractionStr2);
+        try {
+            Fraction fraction1 = new Fraction(fractionStr1);
+            Fraction fraction2 = new Fraction(fractionStr2);
+            System.out.println(fraction1 + "+" + fraction2 + "=" + fraction1.add(fraction2));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        int newNumerator = multiplicated1 + multiplicated2;
-        return new Fraction(newNumerator, newDenominator).simplify();
     }
 
-    public Fraction subtract(Fraction subtrahend) throws Exception {
-        return this.add(new Fraction(-subtrahend.numerator, subtrahend.denominator));
-    }
-
-    public Fraction multiply(Fraction multiplier) throws Exception {
-        this.simplify();
-        multiplier.simplify();
-        if (isWithinIntegersMultiply(numerator, multiplier.numerator) && isWithinIntegersMultiply(denominator, multiplier.denominator)) {
-            return this.multiplyFractions(multiplier);
+    private void subtractFractions(String fractionStr1, String fractionStr2) {
+        System.out.println(StringUtils.class.getName() + ":");
+        System.out.println("Input fraction 1: " + fractionStr1 + " Input fraction 2: " + fractionStr2);
+        try {
+            Fraction fraction1 = new Fraction(fractionStr1);
+            Fraction fraction2 = new Fraction(fractionStr2);
+            System.out.println(fraction1 + "-" + fraction2 + "=" + fraction1.subtract(fraction2));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        Fraction f1 = new Fraction(numerator, multiplier.denominator).simplify();
-        Fraction f2 = new Fraction(multiplier.numerator, denominator).simplify();
-        checkExceptionsForIntMultiply(f1.numerator, f2.numerator);
-        checkExceptionsForIntMultiply(f1.denominator, f2.denominator);
-        return f1.multiplyFractions(f2);
     }
 
-    private static void checkExceptionsForIntMultiply(int num1, int num2) throws Exception {
-        if (!isWithinIntegersMultiply(num1, num2))
-            throw new Exception(MESSAGE_EXCEPTION_NUMBER);
-    }
-
-    public Fraction divided(Fraction divisor) throws Exception {
-        return this.multiply(new Fraction(divisor.denominator, divisor.numerator));
-    }
-
-    private void createFraction(int numerator, int denominator) throws Exception {
-        if (denominator == 0) {
-            throw new Exception("Denominator must not be 0");
+    private void multiplyFractions(String fractionStr1, String fractionStr2) {
+        System.out.println(StringUtils.class.getName() + ":");
+        System.out.println("Input fraction 1: " + fractionStr1 + " Input fraction 2: " + fractionStr2);
+        try {
+            Fraction fraction1 = new Fraction(fractionStr1);
+            Fraction fraction2 = new Fraction(fractionStr2);
+            System.out.println(fraction1 + "*" + fraction2 + "=" + fraction1.multiply(fraction2));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        boolean isPositiveNumber = denominator > 0;
-        this.numerator = isPositiveNumber ? numerator : (numerator * -1);
-        this.denominator = isPositiveNumber ? denominator : abs(denominator);
-
     }
 
-    private static boolean isWithinIntegersMultiply(int b, int a) {
-        return abs(MAX) / b >= abs(a);
+    private void dividedFractions(String fractionStr1, String fractionStr2) {
+        System.out.println(StringUtils.class.getName() + ":");
+        System.out.println("Input fraction 1: " + fractionStr1 + " Input fraction 2: " + fractionStr2);
+        try {
+            Fraction fraction1 = new Fraction(fractionStr1);
+            Fraction fraction2 = new Fraction(fractionStr2);
+            System.out.println(fraction1 + "/" + fraction2 + "=" + fraction1.divided(fraction2));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    private Fraction multiplyFractions(Fraction multiplier) throws Exception {
-        int newNumerator = numerator * multiplier.numerator;
-        int newDenominator = denominator * multiplier.denominator;
-        return new Fraction(newNumerator, newDenominator).simplify();
+    @Test
+    public void doTestInputFraction() {
+        createFraction(fractionStr1);
     }
 
-    private Fraction simplify() throws Exception {
-        int gcd = doGCD(numerator, denominator);
-        int newNumerator = numerator / gcd;
-        int newDenominator = denominator / gcd;
-        return new Fraction(newNumerator, newDenominator);
+    @Test
+    public void doTestWrongString() {
+        createFraction("$ a 4t gd");
     }
 
-    private static int doGCD(int num1, int num2) {
-        return (num2 == 0) ? num1 : doGCD(num2, num1 % num2);
+    @Test
+    public void doTestWrongNumerator() {
+        createFraction("f/4");
     }
 
-    private static int doLCM(int num1, int num2) throws Exception {
-        checkExceptionsForIntMultiply(num1, num2);
-        return num1 * num2 / doGCD(num1, num2);
+    @Test
+    public void doTestWrongDenominator() {
+        createFraction("1/d");
     }
 
-    @Override
-    public int compareTo(Fraction o) {
-        return compare(numerator * o.denominator, o.numerator * denominator);
+    @Test
+    public void doTestInt() {
+        createFraction("5");
     }
 
-    @Override
-    public String toString() {
-        return numerator + DIVIDED + denominator;
+    @Test
+    public void doTestNull() {
+        createFraction(null);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Fraction fractionalNumber = (Fraction) o;
-        return numerator * fractionalNumber.denominator == fractionalNumber.numerator * denominator;
+    @Test
+    public void doTestMinusNumerator() {
+        createFraction("-6/5");
     }
 
-    @Override
-    public int hashCode() {
-        return Arrays.hashCode(new int[]{numerator, denominator});
+    @Test
+    public void doTestMinusDenominator() {
+        createFraction("3/-5");
+    }
+
+    @Test
+    public void doTestDoubleMinus() {
+        createFraction("-3/-4");
+    }
+
+    @Test
+    public void doTestAdd() {
+        sumFractions("5/8", "3/12");
+    }
+
+    @Test
+    public void doTestInputFractionAdd() {
+        sumFractions(fractionStr1, fractionStr2);
+    }
+
+    @Test
+    public void doTestMultiply() {
+        multiplyFractions("5/8", "11/12");
+    }
+
+    @Test
+    public void doTestInputMultiply() {
+        multiplyFractions(fractionStr1, fractionStr2);
+    }
+
+    @Test
+    public void doTestSubtract() {
+        subtractFractions("5/8", "11/12");
+    }
+
+    @Test
+    public void doTestInputFractionSubtract() {
+        subtractFractions(fractionStr1, fractionStr2);
+    }
+
+    @Test
+    public void doTestDivided() {
+        dividedFractions("5/8", "0/12");
+    }
+
+    @Test
+    public void doTestInputFractionDivided() {
+        dividedFractions(fractionStr1, fractionStr2);
+    }
+
+    @Test
+    public void doTestSubtractExceeding() {
+        subtractFractions("2147483647/8", "-1000/12");
+    }
+
+    @Test
+    public void doTestInputFractionExceeding() {
+        dividedFractions("2147483647/8", "2147483647/8");
     }
 }
