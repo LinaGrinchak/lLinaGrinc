@@ -1,92 +1,120 @@
 package gso81;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import org.junit.Test;
 
-import static java.lang.Character.*;
-import static java.lang.Character.isDigit;
+public class TestStringUtils {
+    private static final String MIXED_TEXT = "привет Привет ages 12 through 14 (6-8 Grades) and high school from ages 15 through 19 (9-12 Grades).";
+    private static final String[] PALINDROME_TEXTS = new String[]{"Was it a car or a cat I saw?", "Madam, I’m Adam", "Алла", "Eve", "37573", "VvA44844AvV", "VvA44a564AvV", "   4 a B C b A 4"};
+    String inputText = "   fvcv 4 f2fvcfv";
 
-public class StringUtils {
-    public static String capitalize(String str) {
-        StringBuilder builder = new StringBuilder();
-        if (isEmpty(str)) {
-            return builder.toString();
+    private void isPalindromeTest(String message) {
+        System.out.println("isPalindrome: " + message + " : " + StringUtils.isPalindrome(message));
+    }
+
+    private void capitalizeTest(String message) {
+        System.out.println("capitalizeTest: " + message + " : " + StringUtils.capitalize(message));
+    }
+
+    private void alphabetizeTest(String message) {
+        System.out.println("alphabetize: " + message + " : " + StringUtils.alphabetize(message));
+    }
+
+    @Test
+    public void doTestPalindromeNull() {
+        isPalindromeTest(null);
+    }
+
+    @Test
+    public void doTestCapitalizeNull() {
+        capitalizeTest(null);
+    }
+
+    @Test
+    public void doTestAlphabetizeNull() {
+        alphabetizeTest(null);
+    }
+
+    @Test
+    public void doTestPalindromeEmpty() {
+        isPalindromeTest("");
+    }
+
+    @Test
+    public void doTestCapitalizeEmpty() {
+        capitalizeTest("");
+    }
+
+    @Test
+    public void doTestAlphabetizeEmpty() {
+        alphabetizeTest("");
+    }
+
+    @Test
+    public void doTestAlphabetizeTextSpaces() {
+        alphabetizeTest("        ");
+    }
+
+    @Test
+    public void doTestPalindromeTextSpaces() {
+        isPalindromeTest("        ");
+    }
+
+    @Test
+    public void doTestCapitalizeTextSpaces() {
+        capitalizeTest("        ");
+    }
+
+    @Test
+    public void doTestAlphabetizeMixedText() {
+        alphabetizeTest(MIXED_TEXT);
+    }
+
+    @Test
+    public void doTestPalindromeMixedText() {
+        isPalindromeTest(MIXED_TEXT);
+    }
+
+    @Test
+    public void doTestCapitalizeMixedText() {
+        capitalizeTest(MIXED_TEXT);
+    }
+
+    @Test
+    public void doTestAlphabetizePalindromeText() {
+        for (String message : PALINDROME_TEXTS) {
+            alphabetizeTest(message);
         }
-        for (int i = 0; i < str.length(); i++) {
-            char symbol = str.charAt(i);
-            if (isLetterOrDigit(symbol)) {
-                builder.append(toUpperCase(symbol)).append(str, ++i, str.length());
-                break;
-            } else {
-                builder.append(symbol);
-            }
+    }
+
+    @Test
+    public void doTestPalindromePalindromeText() {
+        for (String message : PALINDROME_TEXTS) {
+            isPalindromeTest(message);
         }
-        return builder.toString();
     }
 
-    public static boolean isPalindrome(String str) {
-        if (isEmpty(str)) {
-            return false;
+    @Test
+    public void doTestCapitalizePalindromeText() {
+        for (String message : PALINDROME_TEXTS) {
+            capitalizeTest(message);
         }
-        String lettersAndDigits = leaveLettersAndDigits(str);
-        return !lettersAndDigits.isEmpty()
-                && lettersAndDigits.equalsIgnoreCase(new StringBuilder(lettersAndDigits).reverse().toString());
     }
 
-    public static String alphabetize(String str) {
-        return (isEmpty(str)) ? str : sortLetters(leaveLatinLetters(str));
+    @Test
+    public void doTestAlphabetizeInputText() {
+
+        alphabetizeTest(inputText);
+
     }
 
-    static boolean isEmpty(String str) {
-        return str == null || str.trim().isEmpty();
+    @Test
+    public void doTestPalindromeInputText() {
+        capitalizeTest(inputText);
     }
 
-    static String leaveLettersAndDigits(String str) {
-        StringBuilder result = new StringBuilder(str.length());
-        for (int i = 0; i < str.length(); i++) {
-            char c = str.charAt(i);
-            if (isLetter(c) || isDigit(c)) {
-                result.append(c);
-            }
-        }
-        return result.toString();
+    @Test
+    public void doTestCapitalizeInputText() {
+        capitalizeTest(inputText);
     }
 
-    private static String leaveLatinLetters(String str) {
-        StringBuilder result = new StringBuilder(str.length());
-        for (int i = 0; i < str.length(); i++) {
-            char c = str.charAt(i);
-            if (isLatinLetters(c)) {
-                result.append(c);
-            }
-        }
-        return result.toString();
-    }
-
-    private static boolean isLatinLetters(char c) {
-        return (isLowerCaseLatinLetter(c) || isUpperCaseLatinLetter(c));
-    }
-
-    private static boolean isLowerCaseLatinLetter(char letter) {
-        return ('a' <= letter && letter <= 'z');
-    }
-
-    private static boolean isUpperCaseLatinLetter(char letter) {
-        return ('A' <= letter && letter <= 'Z');
-    }
-
-    private static String sortLetters(String str) {
-        Comparator<String> comparator = (s1, s2) -> {
-            int r = s1.compareToIgnoreCase(s2);
-            return r == 0 ? s1.compareTo(s2) : r;
-        };
-        List<String> sortedLetters = Arrays.asList(str.split(""));
-        sortedLetters.sort(comparator);
-        StringBuilder result = new StringBuilder(str.length());
-        for (String s : sortedLetters) {
-            result.append(s);
-        }
-        return result.toString();
-    }
 }
