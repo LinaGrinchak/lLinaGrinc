@@ -8,6 +8,7 @@ import static java.lang.Math.abs;
 public class Fraction implements Comparable<Fraction> {
     private static final int MAX = 2147483647;
     private static final String DIVIDED = "/";
+    private static final String MESSAGE_EXCEPTION_NUMBER = "Number out of bounds for Integer values";
     private int numerator;
     private int denominator;
 
@@ -17,12 +18,13 @@ public class Fraction implements Comparable<Fraction> {
 
     Fraction(String fraction) throws Exception {
         String[] strArray = fraction.split(DIVIDED);
-        if (strArray.length == 1) {
-            createFraction(Integer.parseInt(strArray[0]), 1);
-        } else if (strArray.length == 2) {
-            createFraction(Integer.parseInt(strArray[0]), Integer.parseInt(strArray[1]));
-        } else {
+        int lengthArray=strArray.length;
+        if (lengthArray > 2) {
             throw new Exception("Fraction entered incorrectly");
+        } else if (lengthArray == 1) {
+            createFraction(Integer.parseInt(strArray[0]), 1);
+        } else if (lengthArray == 2) {
+            createFraction(Integer.parseInt(strArray[0]), Integer.parseInt(strArray[1]));
         }
     }
 
@@ -32,20 +34,15 @@ public class Fraction implements Comparable<Fraction> {
         int newDenominator = doLCM(denominator, term.denominator);
         int multiplier1 = newDenominator / denominator;
         int multiplier2 = newDenominator / term.denominator;
-        if (isWithinIntegersMultiply(numerator, multiplier1) && isWithinIntegersMultiply(term.numerator, multiplier2)) {
-            int multiplicated1 = numerator * multiplier1;
-            int multiplicated2 = term.numerator * multiplier2;
-            if (abs(MAX - multiplicated1) >= abs(multiplicated2)) {
-                int newNumerator = multiplicated1 + multiplicated2;
-                return new Fraction(newNumerator, newDenominator).simplify();
-            } else {
-                throw new Exception("Fraction entered incorrectly");
-
-            }
-        } else {
-            throw new Exception("Fraction entered incorrectly");
-
+        checkExceptionsForIntMultiply(numerator, multiplier1);
+        checkExceptionsForIntMultiply(term.numerator, multiplier2);
+        int multiplicated1 = numerator * multiplier1;
+        int multiplicated2 = term.numerator * multiplier2;
+        if (abs(MAX - multiplicated1) < abs(multiplicated2)) {
+            throw new Exception(MESSAGE_EXCEPTION_NUMBER);
         }
+        int newNumerator = multiplicated1 + multiplicated2;
+        return new Fraction(newNumerator, newDenominator).simplify();
     }
 
     public Fraction subtract(Fraction subtrahend) throws Exception {
@@ -57,15 +54,17 @@ public class Fraction implements Comparable<Fraction> {
         multiplier.simplify();
         if (isWithinIntegersMultiply(numerator, multiplier.numerator) && isWithinIntegersMultiply(denominator, multiplier.denominator)) {
             return this.multiplyFractions(multiplier);
-        } else {
-            Fraction f1 = new Fraction(numerator, multiplier.denominator).simplify();
-            Fraction f2 = new Fraction(multiplier.numerator, denominator).simplify();
-            if (isWithinIntegersMultiply(f1.numerator, f2.numerator) && isWithinIntegersMultiply(f1.denominator, f2.denominator)) {
-                return f1.multiplyFractions(f2);
-            } else {
-                throw new Exception("Number out of bounds for Integer values");
-            }
         }
+        Fraction f1 = new Fraction(numerator, multiplier.denominator).simplify();
+        Fraction f2 = new Fraction(multiplier.numerator, denominator).simplify();
+        checkExceptionsForIntMultiply(f1.numerator, f2.numerator);
+        checkExceptionsForIntMultiply(f1.denominator, f2.denominator);
+        return f1.multiplyFractions(f2);
+    }
+
+    private static void checkExceptionsForIntMultiply(int num1, int num2) throws Exception {
+        if (!isWithinIntegersMultiply(num1, num2))
+            throw new Exception(MESSAGE_EXCEPTION_NUMBER);
     }
 
     public Fraction divided(Fraction divisor) throws Exception {
@@ -76,13 +75,10 @@ public class Fraction implements Comparable<Fraction> {
         if (denominator == 0) {
             throw new Exception("Denominator must not be 0");
         }
-        if (denominator > 0) {
-            this.numerator = numerator;
-            this.denominator = denominator;
-        } else {
-            this.numerator = numerator * -1;
-            this.denominator = abs(denominator);
-        }
+        boolean isPositiveNumber = denominator > 0;
+        this.numerator = isPositiveNumber ? numerator : (numerator * -1);
+        this.denominator = isPositiveNumber ? denominator : abs(denominator);
+
     }
 
     private static boolean isWithinIntegersMultiply(int b, int a) {
@@ -102,24 +98,18 @@ public class Fraction implements Comparable<Fraction> {
         return new Fraction(newNumerator, newDenominator);
     }
 
+    private static int doGCD(int num1, int num2) {
+        return (num2 == 0) ? num1 : doGCD(num2, num1 % num2);
+    }
+
+    private static int doLCM(int num1, int num2) throws Exception {
+        checkExceptionsForIntMultiply(num1, num2);
+        return num1 * num2 / doGCD(num1, num2);
+    }
+
     @Override
     public int compareTo(Fraction o) {
         return compare(numerator * o.denominator, o.numerator * denominator);
-    }
-
-    private static int doGCD(int a, int b) {
-        if (b == 0)
-            return a;
-        else
-            return doGCD(b, a % b);
-    }
-
-    private static int doLCM(int a, int b) throws Exception {
-        if (isWithinIntegersMultiply(a, b)) {
-            return a * b / doGCD(a, b);
-        } else {
-            throw new Exception("Number out of bounds for Integer values");
-        }
     }
 
     @Override
