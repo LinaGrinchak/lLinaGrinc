@@ -10,38 +10,39 @@ import static java.lang.Character.isDigit;
 public class StringUtils {
     public static String capitalize(String str) {
         StringBuilder builder = new StringBuilder();
-        if (str != null && !str.isEmpty()) {
-            for (int i = 0; i < str.length(); i++)
-                if (isLetterOrDigit(str.charAt(i))) {
-                    builder.append(toUpperCase(str.charAt(i))).append(str, ++i, str.length());
-                    break;
-                } else {
-                    builder.append(str.charAt(i));
-                }
+        if (isEmpty(str)) {
+            return builder.toString();
+        }
+        for (int i = 0; i < str.length(); i++) {
+            char symbol = str.charAt(i);
+            if (isLetterOrDigit(symbol)) {
+                builder.append(toUpperCase(symbol)).append(str, ++i, str.length());
+                break;
+            } else {
+                builder.append(symbol);
+            }
         }
         return builder.toString();
     }
 
     public static boolean isPalindrome(String str) {
-        if (str != null && !str.isEmpty()) {
-            String onlyLetters = leaveLettersAndDigit(str);
-            if (!onlyLetters.isEmpty()) {
-                return onlyLetters.equalsIgnoreCase(new StringBuilder(onlyLetters).reverse().toString());
-            }
+        if (isEmpty(str)) {
             return false;
         }
-        return false;
+        String lettersAndDigits = leaveLettersAndDigits(str);
+        return !lettersAndDigits.isEmpty()
+                && lettersAndDigits.equalsIgnoreCase(new StringBuilder(lettersAndDigits).reverse().toString());
     }
 
     public static String alphabetize(String str) {
-        if (str != null && !str.isEmpty()) {
-            return sortedLetters(str);
-        }
-        return str;
+        return (isEmpty(str)) ? str : sortLetters(leaveLatinLetters(str));
     }
 
+    static boolean isEmpty(String str) {
+        return str == null || str.trim().isEmpty();
+    }
 
-    static String leaveLettersAndDigit(String str) {
+    static String leaveLettersAndDigits(String str) {
         StringBuilder result = new StringBuilder(str.length());
         for (int i = 0; i < str.length(); i++) {
             char c = str.charAt(i);
@@ -75,12 +76,12 @@ public class StringUtils {
         return ('A' <= letter && letter <= 'Z');
     }
 
-    private static String sortedLetters(String str) {
+    private static String sortLetters(String str) {
         Comparator<String> comparator = (s1, s2) -> {
             int r = s1.compareToIgnoreCase(s2);
             return r == 0 ? s1.compareTo(s2) : r;
         };
-        List<String> sortedLetters = Arrays.asList(leaveLatinLetters(str).split(""));
+        List<String> sortedLetters = Arrays.asList(str.split(""));
         sortedLetters.sort(comparator);
         StringBuilder result = new StringBuilder(str.length());
         for (String s : sortedLetters) {
