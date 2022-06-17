@@ -2,7 +2,6 @@ package com.dgphoenix.gso81;
 
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.List;
 
 import static java.lang.Character.*;
 
@@ -74,14 +73,19 @@ public class StringUtils {
     }
 
     private static String sortLetters(String str) {
-        Comparator<String> comparator = (s1, s2) -> {
-            int r = s1.compareToIgnoreCase(s2);
-            return r == 0 ? s1.compareTo(s2) : r;
-        };
-        List<String> sortedLetters = Arrays.asList(str.split(""));
-        sortedLetters.sort(comparator);
+        Comparator<String> comparatorIgnoreCase = String::compareToIgnoreCase;
+        Comparator<String> comparator = String::compareTo;
+        char [] letChars = str.toCharArray();
+        String[] letters= new String[letChars.length];
+
+        for (int i=0; i<letChars.length; i++){
+           letters[i]= String.valueOf(letChars[i]);
+        }
+
+        Arrays.sort(letters,comparatorIgnoreCase.thenComparing(comparator));
+
         StringBuilder result = new StringBuilder(str.length());
-        for (String s : sortedLetters) {
+        for (String s : letters) {
             result.append(s);
         }
         return result.toString();
