@@ -1,9 +1,9 @@
 package com.dgphoenix.gso81;
 
 import java.util.Arrays;
-import java.util.Comparator;
 
 import static java.lang.Character.*;
+import static java.lang.String.CASE_INSENSITIVE_ORDER;
 
 public class StringUtils {
     public static String capitalize(String str) {
@@ -73,8 +73,6 @@ public class StringUtils {
     }
 
     private static String sortLetters(String str) {
-        Comparator<String> comparatorIgnoreCase = String::compareToIgnoreCase;
-        Comparator<String> comparator = String::compareTo;
         char [] letChars = str.toCharArray();
         String[] letters= new String[letChars.length];
 
@@ -82,12 +80,13 @@ public class StringUtils {
            letters[i]= String.valueOf(letChars[i]);
         }
 
-        Arrays.sort(letters,comparatorIgnoreCase.thenComparing(comparator));
+        Arrays.sort(letters,CASE_INSENSITIVE_ORDER);
 
         StringBuilder result = new StringBuilder(str.length());
         for (String s : letters) {
             result.append(s);
         }
+
         return result.toString();
     }
 }
