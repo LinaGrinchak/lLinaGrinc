@@ -18,19 +18,26 @@ public class Fraction implements Comparable<Fraction> {
 
     Fraction(String fraction) throws Exception {
         String[] strArray = fraction.split(DIVIDED);
-        int lengthArray=strArray.length;
-        if (lengthArray > 2) {
+        int lengthArray = strArray.length;
+        if (lengthArray == 0 || lengthArray > 2) {
             throw new Exception("Fraction entered incorrectly");
         } else if (lengthArray == 1) {
+            if (strArray[0].isEmpty()) {
+                throw new Exception("Numerator entered incorrectly");
+            }
             createFraction(Integer.parseInt(strArray[0]), 1);
         } else if (lengthArray == 2) {
+            if (strArray[0].isEmpty()) {
+                throw new Exception("Numerator entered incorrectly");
+            }
+            if (strArray[1].isEmpty()) {
+                throw new Exception("Denominator entered incorrectly");
+            }
             createFraction(Integer.parseInt(strArray[0]), Integer.parseInt(strArray[1]));
         }
     }
 
     public Fraction add(Fraction term) throws Exception {
-        this.simplify();
-        term.simplify();
         int newDenominator = doLCM(denominator, term.denominator);
         int multiplier1 = newDenominator / denominator;
         int multiplier2 = newDenominator / term.denominator;
@@ -42,7 +49,7 @@ public class Fraction implements Comparable<Fraction> {
             throw new Exception(MESSAGE_EXCEPTION_NUMBER);
         }
         int newNumerator = multiplicated1 + multiplicated2;
-        return new Fraction(newNumerator, newDenominator).simplify();
+        return new Fraction(newNumerator, newDenominator);
     }
 
     public Fraction subtract(Fraction subtrahend) throws Exception {
@@ -50,13 +57,11 @@ public class Fraction implements Comparable<Fraction> {
     }
 
     public Fraction multiply(Fraction multiplier) throws Exception {
-        this.simplify();
-        multiplier.simplify();
         if (isWithinIntegersMultiply(numerator, multiplier.numerator) && isWithinIntegersMultiply(denominator, multiplier.denominator)) {
             return this.multiplyFractions(multiplier);
         }
-        Fraction f1 = new Fraction(numerator, multiplier.denominator).simplify();
-        Fraction f2 = new Fraction(multiplier.numerator, denominator).simplify();
+        Fraction f1 = new Fraction(numerator, multiplier.denominator);
+        Fraction f2 = new Fraction(multiplier.numerator, denominator);
         checkExceptionsForIntMultiply(f1.numerator, f2.numerator);
         checkExceptionsForIntMultiply(f1.denominator, f2.denominator);
         return f1.multiplyFractions(f2);
@@ -75,26 +80,21 @@ public class Fraction implements Comparable<Fraction> {
         if (denominator == 0) {
             throw new Exception("Denominator must not be 0");
         }
-        boolean isPositiveNumber = denominator > 0;
-        this.numerator = isPositiveNumber ? numerator : (numerator * -1);
-        this.denominator = isPositiveNumber ? denominator : abs(denominator);
-
+        int gcd = doGCD(numerator, denominator);
+        int newNumerator = numerator / gcd;
+        int newDenominator = denominator / gcd;
+        boolean isPositiveNumber = newDenominator > 0;
+        this.numerator = isPositiveNumber ? newNumerator : (newNumerator * -1);
+        this.denominator = isPositiveNumber ? newDenominator : abs(newDenominator);
     }
 
     private static boolean isWithinIntegersMultiply(int b, int a) {
-        return abs(MAX) / b >= abs(a);
+        return abs(MAX) / abs(b) >= abs(a);
     }
 
     private Fraction multiplyFractions(Fraction multiplier) throws Exception {
         int newNumerator = numerator * multiplier.numerator;
         int newDenominator = denominator * multiplier.denominator;
-        return new Fraction(newNumerator, newDenominator).simplify();
-    }
-
-    private Fraction simplify() throws Exception {
-        int gcd = doGCD(numerator, denominator);
-        int newNumerator = numerator / gcd;
-        int newDenominator = denominator / gcd;
         return new Fraction(newNumerator, newDenominator);
     }
 
