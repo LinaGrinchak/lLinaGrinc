@@ -89,4 +89,10 @@ public class TestStringUtils {
         String expected = "BbeehHilloTy";
         Assert.assertEquals(expected, StringUtils.alphabetize(text));
     }
+    @Test
+    public void isAlphabetizeCyrillicText() {
+        String text = "КроТ еНоТ";
+        String expected = "";
+        Assert.assertEquals(expected, StringUtils.alphabetize(text));
+    }
 }
