@@ -30,7 +30,7 @@ public class TestCensuredText {
     }
 
     @Test
-    public void doTestCensuredWordSpaces() {
+    public void isCensuredWordSpaces() {
         try {
             censuredTest("     ", "Censored   Spaces:");
             Assert.fail("Expected Exception");
@@ -56,7 +56,7 @@ public class TestCensuredText {
     }
 
     @Test
-    public void doTestCensuredTextSpaces() throws Exception {
+    public void isCensuredTextSpaces() throws Exception {
         String censuredWord = "wold";
         String text = "      ";
         String expectedText = "";
