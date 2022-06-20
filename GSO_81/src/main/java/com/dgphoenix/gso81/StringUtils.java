@@ -1,92 +1,66 @@
 package com.dgphoenix.gso81;
 
-import org.junit.Assert;
-import org.junit.Test;
+import java.util.Arrays;
 
-public class TestStringUtils {
-    @Test
-    public void isCapitalizeNull() {
-        Assert.assertEquals("", StringUtils.capitalize(null));
-    }
+import static java.lang.Character.*;
+import static java.lang.String.CASE_INSENSITIVE_ORDER;
 
-    @Test
-    public void isCapitalizeEmpty() {
-        Assert.assertEquals("", StringUtils.capitalize(""));
-
-    }
-
-    @Test
-    public void isCapitalizeTextSpaces() {
-        Assert.assertEquals("", StringUtils.capitalize("        "));
-
-    }
-
-    @Test
-    public void isCapitalizeText() {
-        String text = "capitalize";
-        String expected = "Capitalize";
-        Assert.assertEquals(expected, StringUtils.capitalize(text));
-    }
-
-    @Test
-    public void isCapitalizeNumber() {
-        String text = "3424";
-        String expected = "3424";
-        Assert.assertEquals(expected, StringUtils.capitalize(text));
-    }
-
-    @Test
-    public void isPalindromeNull() {
-        Assert.assertFalse(StringUtils.isPalindrome(null));
-    }
-
-    @Test
-    public void isPalindromeEmpty() {
-        Assert.assertFalse(StringUtils.isPalindrome(""));
-    }
-
-    @Test
-    public void isPalindromeTextSpaces() {
-        Assert.assertFalse(StringUtils.isPalindrome("        "));
-    }
-
-    @Test
-    public void isPalindromePalindromeStrings() {
-        for (String message : new String[]{"Madam", "37573", "   4 a B C b A 4"}) {
-            Assert.assertTrue(StringUtils.isPalindrome(message));
+public class StringUtils {
+    public static String capitalize(String str) {
+        if (isEmpty(str)) {
+            return "";
         }
+        StringBuilder builder = new StringBuilder(str.length());
+        char symbol = str.charAt(0);
+        builder.append(toUpperCase(symbol)).append(str,  1, str.length());
+        return builder.toString();
     }
 
-    @Test
-    public void isPalindromeNoPalindrome() {
-        String message = "Palindrome";
-        Assert.assertFalse(StringUtils.isPalindrome(message));
+    public static boolean isPalindrome(String str) {
+        if (isEmpty(str)) {
+            return false;
+        }
+        String revertStr = new StringBuilder(str.trim()).reverse().toString();
+        return str.trim().equalsIgnoreCase(revertStr);
     }
 
-    @Test
-    public void isAlphabetizeNull() {
-        Assert.assertEquals("", StringUtils.alphabetize(null));
+    public static String alphabetize(String str) {
+        return (isEmpty(str)) ? "" : sortLetters(leaveLatinLetters(str));
     }
 
-    @Test
-    public void isAlphabetizeEmpty() {
-        Assert.assertEquals("", StringUtils.alphabetize(""));
+    static boolean isEmpty(String str) {
+        return str == null || str.trim().isEmpty();
     }
 
-    @Test
-    public void isAlphabetizeTextSpaces() {
-        Assert.assertEquals("", StringUtils.alphabetize("        "));
+    private static String leaveLatinLetters(String str) {
+        StringBuilder result = new StringBuilder(str.length());
+        for (char c : str.toCharArray()) {
+            if (isLatinLetters(c)) {
+                result.append(c);
+            }
+        }
+        return result.toString();
     }
 
-    @Test
-    public void isAlphabetizeTextNumber() {
-        Assert.assertEquals("", StringUtils.alphabetize("4324"));
+    private static boolean isLatinLetters(char c) {
+        return (isLowerCaseLatinLetter(c) || isUpperCaseLatinLetter(c));
     }
 
-    @Test
-    public void isAlphabetizeLatinText() {
-        String text = "The Holy Bible";
-        String expected = "BbeehHilloTy";
-        Assert.assertEquals(expected, StringUtils.alphabetize(text));
+    private static boolean isLowerCaseLatinLetter(char letter) {
+        return ('a' <= letter && letter <= 'z');
+    }
+
+    private static boolean isUpperCaseLatinLetter(char letter) {
+        return ('A' <= letter && letter <= 'Z');
+    }
+
+    private static String sortLetters(String str) {
+        String[] letters =  str.split("");
+        Arrays.sort(letters, CASE_INSENSITIVE_ORDER);
+        StringBuilder result = new StringBuilder(str.length());
+        for (String s : letters) {
+            result.append(s);
+        }
+        return result.toString();
     }
 }
