@@ -1,7 +1,6 @@
 package com.dgphoenix.gso81.temperature;
 
 public abstract class TemperatureConverter {
-
     final static String DEGREE = "\u00b0";
     final static double POINT_FREEZING_OF_WATER_C_IN_K = 273.15;
     final static double COEFFICIENT_FAHRENHEIT = 1.8;
